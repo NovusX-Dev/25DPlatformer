@@ -4,9 +4,12 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    [Header("Movement")]
     [SerializeField] private float _moveSpeed = 10f;
     [SerializeField] private float _jumpHeight = 15f;
     [SerializeField] private float _gravity = 1f;
+
+    private int _coins;
 
     private Vector3 _moveDirection = Vector3.zero;
     private Vector3 _velocity = Vector3.zero;
@@ -23,10 +26,15 @@ public class Player : MonoBehaviour
 
     void Start()
     {
-        
+        UIManager.Instance.UpdateCoinsText(_coins);
     }
 
     void Update()
+    {
+        CalculateMovment();
+    }
+
+    private void CalculateMovment()
     {
         var xHorizontal = Input.GetAxis("Horizontal");
         _moveDirection.x = xHorizontal;
@@ -51,10 +59,17 @@ public class Player : MonoBehaviour
                     _canDoubleJump = false;
                 }
             }
+
             _yVelocity -= _gravity;
         }
 
         _velocity.y = _yVelocity;
         _controller.Move(_velocity * Time.deltaTime);
+    }
+
+    public void AddCoins(int amount)
+    {
+        _coins += amount;
+        UIManager.Instance.UpdateCoinsText(_coins);
     }
 }
