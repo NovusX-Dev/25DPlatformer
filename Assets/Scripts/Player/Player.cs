@@ -126,7 +126,7 @@ public class Player : MonoBehaviour
 
     IEnumerator RestartControllerRoutine()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForEndOfFrame();
         _controller.enabled = true;
     }
 }
