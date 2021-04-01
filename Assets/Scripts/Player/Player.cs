@@ -5,11 +5,18 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     [Header("Movement")]
-    [SerializeField] private float _moveSpeed = 10f;
-    [SerializeField] private float _jumpHeight = 15f;
-    [SerializeField] private float _gravity = 1f;
+    [SerializeField] float _moveSpeed = 10f;
+    [SerializeField] float _jumpHeight = 15f;
+    [SerializeField] float _gravity = 1f;
+
+    [Header("Attributes")] 
+    [SerializeField] int _maxLives = 3;
+
+    [Header("References")] 
+    [SerializeField] Transform _levelStartingPosition;
 
     private int _coins;
+    private int _currentLives;
 
     private Vector3 _moveDirection = Vector3.zero;
     private Vector3 _velocity = Vector3.zero;
@@ -26,12 +33,28 @@ public class Player : MonoBehaviour
 
     void Start()
     {
+        if (_levelStartingPosition == null)
+        {
+            Debug.LogError("Level Starting Position is not Set!!!");
+            Time.timeScale = 0;
+        }
+        
         UIManager.Instance.UpdateCoinsText(_coins);
+        _currentLives = _maxLives;
+        UIManager.Instance.UpdateLivesText(_currentLives);
+
+        transform.position = _levelStartingPosition.position;
     }
 
     void Update()
     {
         CalculateMovment();
+
+        //for debugging only
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            transform.position = _levelStartingPosition.position;
+        }
     }
 
     private void CalculateMovment()
@@ -71,5 +94,39 @@ public class Player : MonoBehaviour
     {
         _coins += amount;
         UIManager.Instance.UpdateCoinsText(_coins);
+    }
+
+    public void DamagePlayer(int amount)
+    {
+        _currentLives -= amount;
+        UIManager.Instance.UpdateLivesText(_currentLives);
+
+        if (_currentLives < 1)
+        {
+            _currentLives = 0;
+            UIManager.Instance.UpdateLivesText(_currentLives);
+            StartCoroutine(PlayerDeathRoutine());
+        }
+    }
+
+    IEnumerator PlayerDeathRoutine()
+    {
+        Time.timeScale = 0.5f;
+        _controller.enabled = false;
+        yield return new WaitForSeconds(2f);
+        LevelManager.Instance.RestartLevel();
+    }
+
+    public void RespawnPlayer()
+    {
+        _controller.enabled = false;
+        transform.position = _levelStartingPosition.position;
+        StartCoroutine(RestartControllerRoutine());
+    }
+
+    IEnumerator RestartControllerRoutine()
+    {
+        yield return new WaitForSeconds(0.5f);
+        _controller.enabled = true;
     }
 }
