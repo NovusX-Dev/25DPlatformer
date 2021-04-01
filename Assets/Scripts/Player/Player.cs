@@ -129,4 +129,9 @@ public class Player : MonoBehaviour
         yield return new WaitForEndOfFrame();
         _controller.enabled = true;
     }
+
+    public int CoinsCollected()
+    {
+        return _coins;
+    }
 }
