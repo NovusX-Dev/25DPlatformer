@@ -20,9 +20,11 @@ public class Player : MonoBehaviour
 
     private Vector3 _moveDirection = Vector3.zero;
     private Vector3 _velocity = Vector3.zero;
+    private Vector3 _wallSurfaceNormal = Vector3.zero;
     private float _yVelocity;
 
     private bool _canDoubleJump = true;
+    private bool _canWallJump = false;
 
     CharacterController _controller;
 
@@ -60,11 +62,14 @@ public class Player : MonoBehaviour
     private void CalculateMovment()
     {
         var xHorizontal = Input.GetAxis("Horizontal");
-        _moveDirection.x = xHorizontal;
-        _velocity = _moveDirection * _moveSpeed;
+        
 
         if (_controller.isGrounded)
         {
+            _canWallJump = true;
+            _moveDirection.x = xHorizontal;
+            _velocity = _moveDirection * _moveSpeed;
+
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 _yVelocity = _jumpHeight;
@@ -73,7 +78,7 @@ public class Player : MonoBehaviour
         }
         else
         {
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.Space) && !_canWallJump)
             {
                 if (_canDoubleJump)
                 {
@@ -83,11 +88,31 @@ public class Player : MonoBehaviour
                 }
             }
 
+            if (Input.GetKeyDown(KeyCode.Space) && _canWallJump)
+            {
+                _yVelocity = 0;
+                _yVelocity = _jumpHeight;
+                _velocity = _wallSurfaceNormal * _moveSpeed;
+            }
+
             _yVelocity -= _gravity;
         }
 
         _velocity.y = _yVelocity;
         _controller.Move(_velocity * Time.deltaTime);
+    }
+
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if(hit != null)
+        {
+            if (!_controller.isGrounded && hit.transform.tag == "Wall")
+            {
+                Debug.DrawRay(hit.normal, hit.normal, Color.blue);
+                _wallSurfaceNormal = hit.normal;
+                _canWallJump = true;
+            }
+        }
     }
 
     public void AddCoins(int amount)

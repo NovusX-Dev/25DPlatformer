@@ -1700,7 +1700,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8739375539376734321, guid: 3a7f53b22d7c026499590234396e5fcd, type: 3}
       propertyPath: m_TagString
-      value: Untagged
+      value: Wall
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3a7f53b22d7c026499590234396e5fcd, type: 3}
@@ -2272,7 +2272,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1478685365}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -4.65, y: 1.44, z: 0}
+  m_LocalPosition: {x: 22.1, y: 16.14, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -2343,7 +2343,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8739375539376734321, guid: 3a7f53b22d7c026499590234396e5fcd, type: 3}
       propertyPath: m_TagString
-      value: Untagged
+      value: Wall
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3a7f53b22d7c026499590234396e5fcd, type: 3}
