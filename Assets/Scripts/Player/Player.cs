@@ -8,6 +8,7 @@ public class Player : MonoBehaviour
     [SerializeField] float _moveSpeed = 10f;
     [SerializeField] float _jumpHeight = 15f;
     [SerializeField] float _gravity = 1f;
+    [SerializeField] private float _pushPower = 2f;
 
     [Header("Attributes")] 
     [SerializeField] int _maxLives = 3;
@@ -92,7 +93,7 @@ public class Player : MonoBehaviour
             {
                 _yVelocity = 0;
                 _yVelocity = _jumpHeight;
-                _velocity = _wallSurfaceNormal * _moveSpeed;
+                _velocity = _wallSurfaceNormal * _moveSpeed * 2;
             }
 
             _yVelocity -= _gravity;
@@ -104,6 +105,7 @@ public class Player : MonoBehaviour
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
+
         if(hit != null)
         {
             if (!_controller.isGrounded && hit.transform.tag == "Wall")
@@ -111,6 +113,22 @@ public class Player : MonoBehaviour
                 Debug.DrawRay(hit.normal, hit.normal, Color.blue);
                 _wallSurfaceNormal = hit.normal;
                 _canWallJump = true;
+            }
+
+            if (hit.collider.CompareTag("Movable Object"))
+            {
+                var _movableObject = hit.collider.attachedRigidbody;
+                if (_movableObject.isKinematic == true)
+                    return;
+
+                if (hit.moveDirection.y < -0.3f)
+                    return;
+
+                if (Input.GetKey(KeyCode.E))
+                {
+                    var pushDir = new Vector3(hit.moveDirection.x, 0);
+                    _movableObject.velocity = pushDir * _pushPower;
+                }
             }
         }
     }
